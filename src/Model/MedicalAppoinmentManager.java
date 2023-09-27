@@ -40,6 +40,7 @@ public class MedicalAppoinmentManager  {
 		return avaiablesMedicalAppoinments;
 	}
 
+
 	public void medicalAppoinmentsCreationAndSetHour(){
 		LocalDateTime startTime=LocalDateTime.parse("2023-09-25T08:00:00");	
 		LocalDateTime lastDayOfTheYear=LocalDateTime.parse("2023-12-31T18:00");
