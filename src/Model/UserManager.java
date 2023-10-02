@@ -2,7 +2,9 @@ package Model;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import Exceptions.ExistingUserException;
 import Exceptions.UserNotFoundException;
 
 public class UserManager {
@@ -37,12 +39,21 @@ public class UserManager {
 		return filteredUser;
 	}
 
-	public void verifyUserLicense(long license){
+	public boolean verifyIfUserExists(long license,String password){
+		boolean userExists=usersDataBase.stream()
+		             .anyMatch(user->user.getLicense()==license&&password.equals(password));
+		             
+		return userExists;
 
 	}
 
-	public void verifyUserIdentityTarjet(long identityTarjet){
+	public long verifyUserLicense(long license){
+		return license;
+	}
 
+	public long verifyUserIdentityTarjet(long identityTarjet){
+
+		return identityTarjet;
 	}
 
 
