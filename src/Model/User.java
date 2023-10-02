@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import Exceptions.NonExistentOptionException;
+import View.View;
 
 public class User {
 
@@ -13,15 +14,18 @@ public class User {
 	private long license;
 	private String name;
 	private String lastName;
-	private List<MedicalAppoinment>medicalAppoinmentsList;
-
+	private List<MedicalAppoinment>medicalAppoinmentsHistory;
+    private View view;
 	public User(){
-		
-		medicalAppoinmentsList=new ArrayList<MedicalAppoinment>();
+		medicalAppoinmentsHistory=new ArrayList<MedicalAppoinment>();
+		view=new View();
 	}
 
 	public void setMail(String mail){
-		this.mail=mail;
+		if(mail!=null){
+			this.mail=mail;
+		}
+       throw new NullPointerException();
 	}
 
 	public String getMail() {
@@ -29,7 +33,10 @@ public class User {
 	}
 
 	public void setName(String name){
-		this.name=name;
+		if(name!=null){
+			this.name=name;
+		}
+		throw new NullPointerException();
 	}
 
 	public String getName() {
@@ -37,7 +44,10 @@ public class User {
 	}
 
 	public void setPassword(String password){
-		this.password=password;
+		if(password!=null){
+			this.password=password;
+		}
+		throw new NullPointerException();
 	}
 
 	public String getPassword() {
@@ -45,7 +55,10 @@ public class User {
 	}
 
 	public void setLastName(String lastName){
-		this.lastName=lastName;
+		if(lastName!=null){
+			this.lastName=lastName;
+		}
+		throw new NullPointerException();
 	}
 
 	public String getLastName() {
@@ -60,16 +73,16 @@ public class User {
 		return license;
 	}
 
-	public void setMedicalAppoinmentList(List<MedicalAppoinment>medicalAppoinment){
-		this.medicalAppoinmentsList=medicalAppoinment;
+	public void setMedicalAppoinmentList(List<MedicalAppoinment>medicalAppoinmentHistory){
+		this.medicalAppoinmentsHistory=medicalAppoinmentHistory;
 	}
 
-	public List<MedicalAppoinment>getMedicalAppoinment(){
-		return medicalAppoinmentsList;
+	public List<MedicalAppoinment>getMedicalAppoinmentsHistory(){
+		return medicalAppoinmentsHistory;
 	}
 
 	public void addMedicalAppoinmenToList(MedicalAppoinment medicalAppoinment) {
-		medicalAppoinmentsList.add(medicalAppoinment);
+		medicalAppoinmentsHistory.add(medicalAppoinment);
 	}
 
 	public MedicalAppoinment selectMedicalAppoinment(List<MedicalAppoinment>avaiablesMedicalAppoinments,int selectedAppoinment){
@@ -82,6 +95,17 @@ public class User {
 	}
 	
 	
+
+	@Override
+	public String toString() {
+		StringBuilder userInformation=new StringBuilder();
+		userInformation.append("Nombre del usuario: ").append(getName()).append(" ").append(getLastName()).append("\n")
+		.append("Documento: ").append(getLicense()).append("\n")
+		.append("Correo Electronico: ").append(getMail());
+
+		return userInformation.toString();
+	}
+
 
 
 
