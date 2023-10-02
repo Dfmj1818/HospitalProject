@@ -3,6 +3,7 @@ package Model;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,7 +25,7 @@ public class MedicalAppoinmentManager  {
 		return medicalAppoinmentsList;
 	}
 
-	public void setMedicalAppoinmentId() {
+	public void setMedicalAppoinmentsId() {
 		int id=0;
 		for(MedicalAppoinment medicalAppoinment:medicalAppoinmentsList){
 			id++;
@@ -52,6 +53,12 @@ public class MedicalAppoinmentManager  {
 			medicalAppoinmentsList.add(medicalAppoinment);
 			hoursPassedInTheDay++;
 
+			if(hoursPassedInTheDay<=7) {
+				medicalAppoinment.setAppoinmentType("Medicina General");
+			}
+			else {
+				medicalAppoinment.setAppoinmentType("Odontologia");
+			}
 			if(hoursPassedInTheDay>=10){
 				hoursPassedInTheDay=0;
 				startTime=startTime.plusDays(1);
@@ -66,16 +73,28 @@ public class MedicalAppoinmentManager  {
 		}
 	}
 
+
 	public void assignDoctors(){
-		for(MedicalAppoinment medicalAppoinment:medicalAppoinmentsList){
-            //pendiente implementar
+		if(medicalAppoinmentsList.isEmpty()){
+			throw new EmptyListException();
 		}
+		else {
+			for(MedicalAppoinment medicalAppoinment:medicalAppoinmentsList){
+				if(medicalAppoinment.getAppoinmentType().equalsIgnoreCase("Medicina General")){
+					medicalAppoinment.setNameOfDoctor("Dr.Daniel");
+				}
+				else {
+					medicalAppoinment.setNameOfDoctor("Dr Johnson.");
+				}
+			}
+		}
+
 	}
 
 
 	public List<MedicalAppoinment>filterByAppoinmentType(int selectedMedicalAppoinment){
 		List<MedicalAppoinment>filteredListByAppoinmentType=medicalAppoinmentsList.stream()
-				.filter(medicalAppoinment->medicalAppoinment.getAppoinmentType()==selectedMedicalAppoinment)
+				.filter(medicalAppoinment->medicalAppoinment.getAppoinmentType().equals(selectedMedicalAppoinment))
 				.collect(Collectors.toList());
 
 		return filteredListByAppoinmentType;
