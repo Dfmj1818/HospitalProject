@@ -3,7 +3,7 @@ package Model;
 import java.time.LocalDateTime;
 
 public class MedicalAppoinment {
-	
+
 	private int id;
 	private User user;
 	private String appoinmentType;
@@ -11,53 +11,60 @@ public class MedicalAppoinment {
 	private LocalDateTime dateOfAppoinment;
 	private int value;
 	private boolean stateOfMedicalAppoinment;
-	
-	public MedicalAppoinment(int id,User user,String appoinmentType,String nameOfDoctor,LocalDateTime dateOfAppoinment,int value,boolean stateOfMedicalAppoinment){
-        this.id=id;
-		this.user=user;
-		this.appoinmentType=appoinmentType;
-        this.nameOfDoctor=nameOfDoctor;
-        this.dateOfAppoinment=dateOfAppoinment;
-        this.setValue(value);
-        this.setStateOfMedicalAppoinment(stateOfMedicalAppoinment);
+
+	public MedicalAppoinment(){
+		
 	}
-	
+
 	public void setId(int id){
 		this.id=id;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
-	
+
 	public void setUser(User user){
-		this.user=user;
+		if(user!=null){
+			this.user=user;
+		}
+		throw new NullPointerException();
 	}
-	
+
 	public User getUser(){
 		return user;
 	}
-	
+
 	public void setAppoinmentType(String appoinmentType){
-		this.appoinmentType=appoinmentType;
+		if(appoinmentType!=null){
+			this.appoinmentType=appoinmentType;
+		}
+		throw new NullPointerException();
 	}
-   
+
 	public String getAppoinmentType() {
 		return appoinmentType;
 	}
-	
+
 	public void setNameOfDoctor(String nameOfDoctor) {
-		this.nameOfDoctor=nameOfDoctor;
+		if(nameOfDoctor!=null){
+			this.nameOfDoctor=nameOfDoctor;
+		}
+		throw new NullPointerException();
 	}
-	
+
 	public String getNameOfDoctor() {
 		return nameOfDoctor;
 	}
-	
+
 	public void setDateOfAppoinment(LocalDateTime dateOfAppoinment) {
-		this.dateOfAppoinment=dateOfAppoinment;
+		if(dateOfAppoinment!=null){
+			this.dateOfAppoinment=dateOfAppoinment;
+		}
+		throw new NullPointerException();
+		
 	}
-	
+
 	public LocalDateTime getDateOfAppoinment() {
 		return dateOfAppoinment;
 	}
@@ -77,17 +84,17 @@ public class MedicalAppoinment {
 	public void setStateOfMedicalAppoinment(boolean stateOfMedicalAppoinment) {
 		this.stateOfMedicalAppoinment = stateOfMedicalAppoinment;
 	}
-	
-	@Override 
+
+	@Override
 	public String toString() {
 		StringBuilder medicalAppoinmentInformation=new StringBuilder();
-	    medicalAppoinmentInformation.append("Nombre del Paciente: ")
-	    .append(user.getName())
-	    .append(user.getLastName())
-	    .append("\n")
-	    .append("Tipo de Cita: ")
-	    .append(appoinmentType)
-	    .append("\n")
+		medicalAppoinmentInformation.append("Nombre del Paciente: ")
+		.append(user.getName())
+		.append(user.getLastName())
+		.append("\n")
+		.append("Tipo de Cita: ")
+		.append(appoinmentType)
+		.append("\n")
 		.append("Nombre del Doctor: ")
 		.append(nameOfDoctor)
 		.append("\n")
@@ -102,4 +109,5 @@ public class MedicalAppoinment {
 		}
 		return medicalAppoinmentInformation.toString();
 	}
+	
 }
