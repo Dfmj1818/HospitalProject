@@ -32,7 +32,7 @@ public class UserManager {
 
 	public User filterUser(long license,String password){
 		User filteredUser=usersDataBase.stream()
-				.filter(user->user.getLicense()==license&&user.getName().equals(password))
+				.filter(user->user.getLicense()==license&&user.getPassword().equals(password))
 				.findFirst()
 				.orElseThrow(UserNotFoundException::new);
 
