@@ -1,9 +1,7 @@
 package Presenter;
 
 import java.util.List;
-
 import Exceptions.ExistingUserException;
-import Exceptions.NonExistentOptionException;
 import Exceptions.UserNotFoundException;
 import Model.MedicalAppoinment;
 import Model.MedicalAppoinmentManager;
@@ -25,9 +23,10 @@ public class Presenter {
 
 	public static void main(String[]args){
 		Presenter presenter=new Presenter();
-		presenter.entryMenu();
 		presenter.medicalAppoinmentMananger.medicalAppoinmentsCreationAndSetHour();
 		presenter.medicalAppoinmentMananger.setMedicalAppoinmentsId();
+		presenter.entryMenu();
+
 
 	}
 
@@ -39,15 +38,17 @@ public class Presenter {
 		String password="";
 
 		while(!exit){
-			view.showMessage("Bienvenido a Colsubsidio,¿Que deseas Hacer Hoy?\n1.Iniciar Sesion\n2.Crear Cuenta\n3.Salir");
+			view.showMessage("Bienvenido a Colsubsidio,¿Que deseas Hacer Hoy?\n1.Crear Cuenta\n2.Iniciar sesion\n3.Salir");
 			digitedOption=view.readInt();
 			switch(digitedOption){
 			case 1:  
-				User foundUser=loginUser();
-				runHospitalServices(foundUser);
+				registerUser();
 				break;
 			case 2:
-                registerUser();
+				User foundUser=loginUser();
+				if(foundUser!=null){
+					runHospitalServices(foundUser);
+				}
 				break;
 			case 3:
 				view.showMessage("Hasta luego,Saliendo de la App.....");
@@ -74,14 +75,17 @@ public class Presenter {
 			switch(digitedOption){
 			case 1:	 
 
+
 				break;
 			case 2:
-               List<MedicalAppoinment>medicalAppoinmentsHistory=user.getMedicalAppoinmentsHistory();
-               view.showMedicalAppoinmentsList(medicalAppoinmentsHistory);
+				List<MedicalAppoinment>medicalAppoinmentsHistory=user.getMedicalAppoinmentsHistory();
+				view.showMedicalAppoinmentsList(medicalAppoinmentsHistory);
 				break;
 			case 3:
 
 				break;
+				
+				
 
 			}
 
@@ -96,9 +100,9 @@ public class Presenter {
 		long license;
 		String digitedPassword="";
 		User foundUser=null;
-		
+
 		while(!exit) {
-			view.showMessage("¿Selecciona el tipo de documento que tienes\n1.Tarjeta de identidad\n2.Cedula de Ciudadania\n3.Selecciona 3 Si deseas Salir");
+			view.showMessage("¿Selecciona el tipo de documento que tienes\n1.Tarjeta de identidad\n2.Cedula de Ciudadania\n3.Selecciona 3 Si deseas Volver al menu Principal");
 			selectedOption=view.readInt();
 			switch(selectedOption){
 			case 1:
@@ -108,6 +112,7 @@ public class Presenter {
 				digitedPassword=view.readString();
 				try {
 					foundUser=userManager.filterUser(license, digitedPassword);
+					exit=true;
 				}catch(UserNotFoundException e){
 					view.showMessage(e.getMessage());
 				}
@@ -121,6 +126,7 @@ public class Presenter {
 				digitedPassword=view.readString();
 				try {
 					foundUser=userManager.filterUser(license, digitedPassword);
+					exit=true;
 				}catch(UserNotFoundException e){
 					view.showMessage(e.getMessage());
 				}
@@ -146,10 +152,10 @@ public class Presenter {
 		String digitedName;
 		String digitedLastName;
 		int digitedOption;
-		boolean exit=true;
+		boolean exit=false;
 		long license;
-        boolean userExists;
-        
+		boolean userExists;
+
 		while(!exit) {
 			view.showMessage("Bienvenido a nuestro sistema de registro\nEscoge el tipo de documento que tienes");
 			view.showMessage("1.Tarjeta de Identidad\n2.Cedula de Ciudadania\n3.Selecciona 3 Si deseas Salir");
@@ -172,45 +178,46 @@ public class Presenter {
 					User createdUser=userManager.createUser(digitedMail, password, digitedName, digitedLastName, license);
 					userManager.registerUserInDataBase(createdUser);
 					view.showMessage("Registro Exitoso :-)");
+					exit=true;
 				}
 				else {
 					throw new ExistingUserException();
 				}
 				break;
-				
+
 			case 2:
 				view.showMessage("Digita el numero del documento");
 				license=view.readLong();
 				view.showMessage("Digita Tu contraseña");
 				password=view.readString();
 				view.showMessage("Digita Un correo Electronico");
-                digitedMail=view.readString();
-                view.showMessage("Digita Tu Nombre ");
-                digitedName=view.readString();
-                view.showMessage("Digita tu apellido");
-                digitedLastName=view.readString();
-                userExists=userManager.verifyIfUserExists(license, password);
-                if(!userExists){
-                	User createdUser=userManager.createUser(digitedMail, password, digitedName, digitedLastName, license);
-                	userManager.registerUserInDataBase(createdUser);
-                }
-                else {
-                	throw new ExistingUserException();
-                }
-                break;
-                
+				digitedMail=view.readString();
+				view.showMessage("Digita Tu Nombre ");
+				digitedName=view.readString();
+				view.showMessage("Digita tu apellido");
+				digitedLastName=view.readString();
+				userExists=userManager.verifyIfUserExists(license, password);
+				if(!userExists){
+					User createdUser=userManager.createUser(digitedMail, password, digitedName, digitedLastName, license);
+					userManager.registerUserInDataBase(createdUser);
+					view.showMessage("Registro Exitoso :-)");
+					exit=true;
+				}
+				else {
+					throw new ExistingUserException();
+				}
+				break;
+
 			case 3:
 				exit=true;
 				break;
-				
+
 			default:
 				view.showMessage("La Opcion digitada No Existe,Vuelve a intentarlo");
 				break;
+				
 			}
-
 		}
-
-
 
 	}
 
