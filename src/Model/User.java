@@ -25,7 +25,9 @@ public class User {
 		if(mail!=null){
 			this.mail=mail;
 		}
-       throw new NullPointerException();
+		else {
+			throw new NullPointerException();
+		}
 	}
 
 	public String getMail() {
@@ -36,7 +38,9 @@ public class User {
 		if(name!=null){
 			this.name=name;
 		}
-		throw new NullPointerException();
+		else {
+			throw new NullPointerException();
+		}
 	}
 
 	public String getName() {
@@ -47,7 +51,9 @@ public class User {
 		if(password!=null){
 			this.password=password;
 		}
-		throw new NullPointerException();
+		else {
+			throw new NullPointerException();
+		}	
 	}
 
 	public String getPassword() {
@@ -58,7 +64,9 @@ public class User {
 		if(lastName!=null){
 			this.lastName=lastName;
 		}
-		throw new NullPointerException();
+		else {
+			throw new NullPointerException();
+		}
 	}
 
 	public String getLastName() {
