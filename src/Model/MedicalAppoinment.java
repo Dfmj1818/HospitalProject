@@ -28,7 +28,10 @@ public class MedicalAppoinment {
 		if(user!=null){
 			this.user=user;
 		}
-		throw new NullPointerException();
+		else {
+			throw new NullPointerException();
+		}
+		
 	}
 
 	public User getUser(){
@@ -39,7 +42,10 @@ public class MedicalAppoinment {
 		if(appoinmentType!=null){
 			this.appoinmentType=appoinmentType;
 		}
-		throw new NullPointerException();
+		else {
+			throw new NullPointerException();
+		}
+		
 	}
 
 	public String getAppoinmentType() {
@@ -50,7 +56,10 @@ public class MedicalAppoinment {
 		if(nameOfDoctor!=null){
 			this.nameOfDoctor=nameOfDoctor;
 		}
-		throw new NullPointerException();
+		else {
+			throw new NullPointerException();
+		}
+		
 	}
 
 	public String getNameOfDoctor() {
@@ -61,8 +70,9 @@ public class MedicalAppoinment {
 		if(dateOfAppoinment!=null){
 			this.dateOfAppoinment=dateOfAppoinment;
 		}
-		throw new NullPointerException();
-		
+		else {
+			throw new NullPointerException();
+		}	
 	}
 
 	public LocalDateTime getDateOfAppoinment() {
