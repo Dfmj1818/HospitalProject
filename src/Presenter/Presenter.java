@@ -23,8 +23,9 @@ public class Presenter {
 
 	public static void main(String[]args){
 		Presenter presenter=new Presenter();
+		presenter.medicalAppoinmentMananger.setMedicalAppoinmentsPrice();
 		presenter.medicalAppoinmentMananger.medicalAppoinmentsCreationAndSetHour();
-		presenter.medicalAppoinmentMananger.setMedicalAppoinmentsId();
+		presenter.medicalAppoinmentMananger.assignDoctors();
 		presenter.entryMenu();
 
 
@@ -42,7 +43,10 @@ public class Presenter {
 			digitedOption=view.readInt();
 			switch(digitedOption){
 			case 1:  
-				registerUser();
+				User createdUser=registerUser();
+				if(createdUser!=null){
+					runHospitalServices(createdUser);
+				}
 				break;
 			case 2:
 				User foundUser=loginUser();
@@ -74,8 +78,7 @@ public class Presenter {
 			digitedOption=view.readInt();
 			switch(digitedOption){
 			case 1:	 
-
-
+				scheduleAppoinment(user);
 				break;
 			case 2:
 				List<MedicalAppoinment>medicalAppoinmentsHistory=user.getMedicalAppoinmentsHistory();
@@ -84,8 +87,11 @@ public class Presenter {
 			case 3:
 
 				break;
-				
-				
+
+			default:
+
+
+
 
 			}
 
@@ -146,7 +152,7 @@ public class Presenter {
 		return foundUser;
 	}
 
-	public void registerUser() {
+	public User registerUser() {
 		String digitedMail;
 		String password;
 		String digitedName;
@@ -155,7 +161,7 @@ public class Presenter {
 		boolean exit=false;
 		long license;
 		boolean userExists;
-
+		User createdUser = null;
 		while(!exit) {
 			view.showMessage("Bienvenido a nuestro sistema de registro\nEscoge el tipo de documento que tienes");
 			view.showMessage("1.Tarjeta de Identidad\n2.Cedula de Ciudadania\n3.Selecciona 3 Si deseas Salir");
@@ -175,7 +181,7 @@ public class Presenter {
 				digitedLastName=view.readString();
 				userExists=userManager.verifyIfUserExists(license, password);
 				if(!userExists){
-					User createdUser=userManager.createUser(digitedMail, password, digitedName, digitedLastName, license);
+					createdUser=userManager.createUser(digitedMail, password, digitedName, digitedLastName, license);
 					userManager.registerUserInDataBase(createdUser);
 					view.showMessage("Registro Exitoso :-)");
 					exit=true;
@@ -198,7 +204,7 @@ public class Presenter {
 				digitedLastName=view.readString();
 				userExists=userManager.verifyIfUserExists(license, password);
 				if(!userExists){
-					User createdUser=userManager.createUser(digitedMail, password, digitedName, digitedLastName, license);
+					createdUser=userManager.createUser(digitedMail, password, digitedName, digitedLastName, license);
 					userManager.registerUserInDataBase(createdUser);
 					view.showMessage("Registro Exitoso :-)");
 					exit=true;
@@ -215,13 +221,25 @@ public class Presenter {
 			default:
 				view.showMessage("La Opcion digitada No Existe,Vuelve a intentarlo");
 				break;
-				
+
 			}
 		}
+		return createdUser;
+	}
+
+	public void scheduleAppoinment(User user){
+		int digitedDay;
+		view.showMessage("A continuacion te mostraremos las citas disponibles");
+		List<MedicalAppoinment>avaiablesMedicalAppoinments=medicalAppoinmentMananger.getAvaiablestMedicalAppoinmentsList();
+		view.showMedicalAppoinmentsList(avaiablesMedicalAppoinments);
+		view.showMessage("Digita el dia de la cita que deseas agendar");
+		digitedDay=view.readInt();
+		MedicalAppoinment selectedMedicalAppoinment=user.selectMedicalAppoinment(avaiablesMedicalAppoinments, digitedDay);
+		view.showMessage(selectedMedicalAppoinment.toString());
 
 	}
 
 
-
-
 }
+
+
