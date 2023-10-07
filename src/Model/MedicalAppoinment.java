@@ -11,7 +11,8 @@ public class MedicalAppoinment {
 	private LocalDateTime dateOfAppoinment;
 	private int value;
 	private boolean stateOfMedicalAppoinment;
-
+    private int price; 
+    
 	public MedicalAppoinment(){
 		
 	}
@@ -94,22 +95,31 @@ public class MedicalAppoinment {
 	public void setStateOfMedicalAppoinment(boolean stateOfMedicalAppoinment) {
 		this.stateOfMedicalAppoinment = stateOfMedicalAppoinment;
 	}
+	
+	public void setPriceOfMedicalAppoinment(int priceOfMedicalAppoinment){
+		this.price=priceOfMedicalAppoinment;
+	}
+	
+	public int getPriceOfMedicalAppoinment() {
+         return price;
+	}
+	
 
 	@Override
 	public String toString() {
 		StringBuilder medicalAppoinmentInformation=new StringBuilder();
-		medicalAppoinmentInformation.append("Nombre del Paciente: ")
-		.append(user.getName())
-		.append(user.getLastName())
+		medicalAppoinmentInformation.append("Nombre del Doctor: ")
+		.append(getNameOfDoctor())
 		.append("\n")
 		.append("Tipo de Cita: ")
-		.append(appoinmentType)
+		.append(getAppoinmentType())
 		.append("\n")
 		.append("Nombre del Doctor: ")
-		.append(nameOfDoctor)
+		.append(getNameOfDoctor())
 		.append("\n")
-		.append("Fecha de la cita")
-		.append(dateOfAppoinment)
+		.append("Fecha de la cita: ")
+		.append(getDateOfAppoinment())
+		.append("---------------------------------------------------")
 		.append("\n");
 		if(!stateOfMedicalAppoinment){
 			medicalAppoinmentInformation.append("Estado de la Cita: ").append("[✘]");
