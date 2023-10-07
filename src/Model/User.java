@@ -16,6 +16,8 @@ public class User {
 	private String lastName;
 	private List<MedicalAppoinment>medicalAppoinmentsHistory;
     private View view;
+    private VirtualCard virtualCard;
+    
 	public User(){
 		medicalAppoinmentsHistory=new ArrayList<MedicalAppoinment>();
 		view=new View();
@@ -80,6 +82,14 @@ public class User {
 	public long getLicense() {
 		return license;
 	}
+	
+	public void setVirtualCard(VirtualCard virtualCard){
+		this.virtualCard=virtualCard;
+	}
+	
+	public VirtualCard getVirtualCard() {
+		return virtualCard;
+	}
 
 	public void setMedicalAppoinmentList(List<MedicalAppoinment>medicalAppoinmentHistory){
 		this.medicalAppoinmentsHistory=medicalAppoinmentHistory;
@@ -95,9 +105,9 @@ public class User {
 
 	public MedicalAppoinment selectMedicalAppoinment(List<MedicalAppoinment>avaiablesMedicalAppoinments,int selectedAppoinment){
 		MedicalAppoinment selectedMedicalAppoinment=avaiablesMedicalAppoinments.stream()
-				.filter(medicalAppoinment->medicalAppoinment.getId()==selectedAppoinment)
+				.filter(medicalAppoinment->medicalAppoinment.getDateOfAppoinment().getDayOfMonth()==selectedAppoinment)
 				.findFirst()
-				.orElseThrow();
+				.orElseThrow(NonExistentOptionException::new);
 
 		return selectedMedicalAppoinment;
 	}
