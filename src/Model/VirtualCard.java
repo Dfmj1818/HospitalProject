@@ -1,6 +1,7 @@
 package Model;
 
 import java.time.LocalDate;
+import java.util.Random;
 
 public class VirtualCard {
     
@@ -56,5 +57,22 @@ public class VirtualCard {
 	
 	public LocalDate getDueDate() {
 		return dueDate;
+	}
+	
+	public int generateFunds() {
+		Random random=new Random();
+		int funds = random.nextInt(500000) + 500001;
+		return funds;
+	}
+	public String toString() {
+		StringBuilder virtualCardInformation=new StringBuilder();
+		virtualCardInformation.append("Propietario de la tarjeta")
+		.append(user.getName()).append(user.getName())
+		.append("Numero de la tarjeta: ").append(getCode())
+		.append("CCV: ").append(getCcv())
+		.append("Fecha de Vencimiento: ").append(getDueDate());
+		
+		return virtualCardInformation.toString();
+		
 	}
 }
