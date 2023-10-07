@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import Exceptions.EmptyDataEnteredException;
+import Exceptions.EmptyListException;
 import Model.MedicalAppoinment;
 
 
@@ -19,9 +20,18 @@ public class View {
 	public void showMessage(String message){
 		System.out.println(message);
 	}
+	
+	public void printList(List<?>list){
+		list.forEach(System.out::println);
+	}
 
 	public void showMedicalAppoinmentsList(List<MedicalAppoinment>medicalAppoinmentsList){
-		medicalAppoinmentsList.stream().forEach(medicalAppoinment->System.out.println());
+		if(!medicalAppoinmentsList.isEmpty()){
+			medicalAppoinmentsList.stream().forEach(medicalAppoinment->System.out.println(medicalAppoinment));
+		}
+		else {
+			throw new EmptyListException();
+		}
 	}
 
 	public Long readLong(){
@@ -31,7 +41,7 @@ public class View {
 			try {
 				number=Long.parseLong(longAsString);
 			}catch(NumberFormatException e){
-				showMessage("Ingresa un numero,Valido");
+				showMessage("Ingresa un numero Valido");
 			}
 		}
 	   return number;
