@@ -41,10 +41,13 @@ public class MedicalAppoinmentManager  {
 		return avaiablesMedicalAppoinments;
 	}
 
+	public void setMedicalAppoinmentsPrice() {
+		medicalAppoinmentsList.forEach(medicalAppoinment->medicalAppoinment.setPriceOfMedicalAppoinment(16400));
+	}
 
 	public void medicalAppoinmentsCreationAndSetHour(){
-		LocalDateTime startTime=LocalDateTime.parse("2023-09-25T08:00:00");	
-		LocalDateTime lastDayOfTheYear=LocalDateTime.parse("2023-12-31T18:00");
+		LocalDateTime startTime=LocalDateTime.parse("2023-10-07T08:00:00");	
+		LocalDateTime lastDayOfTheYear=LocalDateTime.parse("2023-10-08T18:00");
 		int hoursPassedInTheDay=0;
 
 		while(startTime.isBefore(lastDayOfTheYear)){
