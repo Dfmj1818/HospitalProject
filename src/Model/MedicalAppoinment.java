@@ -11,10 +11,11 @@ public class MedicalAppoinment {
 	private LocalDateTime dateOfAppoinment;
 	private int value;
 	private boolean stateOfMedicalAppoinment;
-    private int price; 
-    
+	private boolean appoinmentPaymentStatus;
+	private int price; 
+
 	public MedicalAppoinment(){
-		
+
 	}
 
 	public void setId(int id){
@@ -32,7 +33,7 @@ public class MedicalAppoinment {
 		else {
 			throw new NullPointerException();
 		}
-		
+
 	}
 
 	public User getUser(){
@@ -46,7 +47,7 @@ public class MedicalAppoinment {
 		else {
 			throw new NullPointerException();
 		}
-		
+
 	}
 
 	public String getAppoinmentType() {
@@ -60,7 +61,7 @@ public class MedicalAppoinment {
 		else {
 			throw new NullPointerException();
 		}
-		
+
 	}
 
 	public String getNameOfDoctor() {
@@ -95,20 +96,40 @@ public class MedicalAppoinment {
 	public void setStateOfMedicalAppoinment(boolean stateOfMedicalAppoinment) {
 		this.stateOfMedicalAppoinment = stateOfMedicalAppoinment;
 	}
-	
+
 	public void setPriceOfMedicalAppoinment(int priceOfMedicalAppoinment){
 		this.price=priceOfMedicalAppoinment;
 	}
-	
+
 	public int getPriceOfMedicalAppoinment() {
-         return price;
+		return price;
 	}
-	
+
+	public void setAppoinmentPaymentStatus(boolean stateOfMedicalAppoinment) {
+		this.stateOfMedicalAppoinment=appoinmentPaymentStatus;
+	}
+
+	public boolean getStateOfAppoinmentPaymentStatus() {
+		return stateOfMedicalAppoinment;
+	}
+
+	public String showNotice(){
+		StringBuilder information=new StringBuilder();
+		information.append("NOTA: ").append("Si el estado estado esta marcado con [✘],la cita no esta disponible")
+		.append("\n")
+		.append("Si el estado de la Cita es [✔] la cita esta disponible");
+
+		return information.toString();
+	}
+
 
 	@Override
 	public String toString() {
 		StringBuilder medicalAppoinmentInformation=new StringBuilder();
-		medicalAppoinmentInformation.append("Nombre del Doctor: ")
+
+		medicalAppoinmentInformation.append("ID: ")
+		.append(getId()).append("\n")
+		.append("Nombre del Doctor: ")
 		.append(getNameOfDoctor())
 		.append("\n")
 		.append("Tipo de Cita: ")
@@ -118,16 +139,22 @@ public class MedicalAppoinment {
 		.append(getNameOfDoctor())
 		.append("\n")
 		.append("Fecha de la cita: ")
-		.append(getDateOfAppoinment())
-		.append("---------------------------------------------------")
-		.append("\n");
-		if(!stateOfMedicalAppoinment){
-			medicalAppoinmentInformation.append("Estado de la Cita: ").append("[✘]");
+		.append(getDateOfAppoinment()).append("\n");
+		if(getStateOfAppoinmentPaymentStatus()){
+			medicalAppoinmentInformation.append("Pago de la Cita: ").append("Pagada");
 		}
 		else {
-			medicalAppoinmentInformation.append("Estado de la Cita: ").append("[✔]");
+			medicalAppoinmentInformation.append("Pago de La Cita: ").append("No Pagada");
+		}
+		if(!getStateOfMedicalAppoinment()){
+			medicalAppoinmentInformation.append("Estado de la Cita: ").append("[✘]").append("\n")
+			.append(("---------------------------------------------------"));
+		}
+		else {
+			medicalAppoinmentInformation.append("Estado de la Cita: ").append("[✔]").append("\n")
+			.append(("---------------------------------------------------"));
 		}
 		return medicalAppoinmentInformation.toString();
 	}
-	
+
 }
