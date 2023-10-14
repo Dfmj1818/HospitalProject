@@ -1,6 +1,7 @@
 package Presenter;
 
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -93,30 +94,46 @@ public class Presenter {
 			switch(digitedOption){
 			case 1:	 
 				MedicalAppoinment scheduledAppoinment=scheduleAppoinment(user);
-				addMedicalAppoinmentToDataBases(user, medicalAppoinmentMananger, scheduledAppoinment);
+				if(scheduledAppoinment!=null){
+					addMedicalAppoinmentToDataBases(user, medicalAppoinmentMananger, scheduledAppoinment);
+				}
+
 				break;
 			case 2:
 				List<MedicalAppoinment>medicalAppoinmentsHistory=user.getMedicalAppoinmentsHistory();
 				try {
-				    view.showMedicalAppoinmentsList(medicalAppoinmentsHistory);
+					view.showMessage("Estas Son Tus citas Agendadadas");
+					view.showMedicalAppoinmentsList(medicalAppoinmentsHistory);
+
 				}catch(EmptyListException e){
 					view.showMessage(e.getMessage());
 				}
 				break;
 			case 3:
 
+
 				break;
 			case 4:
-				getUnpaidAppoinmets(user);
-				view.showMessage("¿Deseas Pagar alguna de tus citas Pendientes?");
-				yesOrNotAnswer=view.readString();
-				if(yesOrNotAnswer.toLowerCase().equals("yes")){
-					VirtualCard virtualCard=enterPaymentData(user);
-					List<MedicalAppoinment>unpaidAppoinments=getUnpaidAppoinmets(user);
-					view.showMedicalAppoinmentsList(unpaidAppoinments);
-					medicalAppoinmentToPay(user, virtualCard,unpaidAppoinments);
+				try {
+					List<MedicalAppoinment>unpaidsMedicalAppoinments=getUnpaidAppoinmets(user);
+					viewPendingMedicalAppoinments(unpaidsMedicalAppoinments);
+					view.showMessage("¿Deseas Pagar Alguna De tus Citas?");
+					yesOrNotAnswer=view.readString();
+					if(yesOrNotAnswer.toLowerCase().equals("si")){
+						VirtualCard virtualCard=enterPaymentData(user);
+						MedicalAppoinment selectedMedicalAppoinment=selectMedicalAppoinmentToPay(user, unpaidsMedicalAppoinments);			
+						medicalAppoinmentMananger.markAppoinmentAsBusy(unpaidsMedicalAppoinments, digitedOption);
+					}
+				}catch(NonExistentOptionException e){
+					view.showMessage(e.getMessage());
+				}catch(InsufficientFundsException e){
+					view.showMessage(e.getMessage());
+				}catch(EmptyListException e){
+					view.showMessage(e.getMessage());
 				}
-				break;
+
+
+				break; 
 
 			default:
 				throw new NonExistentOptionException();
@@ -191,6 +208,7 @@ public class Presenter {
 		boolean userExists;
 		User createdUser = null;
 		List<MedicalAppoinment>avaiablesMedicalAppoinments;
+
 		try {		
 			while(!exit) {
 				view.showMessage("Bienvenido a nuestro sistema de registro\nEscoge el tipo de documento que tienes");
@@ -265,30 +283,51 @@ public class Presenter {
 	public MedicalAppoinment scheduleAppoinment(User user){
 		int digitedId;
 		int journeyChosen;
+
 		MedicalAppoinment selectedMedicalAppoinment=null;
 		List<MedicalAppoinment>avaiablesMedicalAppoinments;
 		view.showMessage("Selecciona la jornada en la que deseas agendar tu cita\n1.Mañana\n2.Tarde");
 		journeyChosen=view.readInt();
+
 		switch(journeyChosen){
-		case 1:
-			avaiablesMedicalAppoinments=medicalAppoinmentMananger.filterMedicalAppoinmentsByMorningHour();
-			view.showMedicalAppoinmentsList(avaiablesMedicalAppoinments);
-			view.showMessage("Digita el id de la cita que deseas agendar");
-			digitedId=view.readInt();
-			selectedMedicalAppoinment=user.selectMedicalAppoinment(avaiablesMedicalAppoinments, digitedId);
+		case 1:		
+			try {
+				avaiablesMedicalAppoinments=medicalAppoinmentMananger.filterMedicalAppoinmentsByMorningHour();
+				view.showMedicalAppoinmentsList(avaiablesMedicalAppoinments);
+				view.showMessage("Digita el id de la cita que deseas agendar");
+				digitedId=view.readInt();
+				selectedMedicalAppoinment=user.selectMedicalAppoinment(avaiablesMedicalAppoinments, digitedId);
+				medicalAppoinmentMananger.removeMedicalAppoinment(avaiablesMedicalAppoinments, journeyChosen);
+				medicalAppoinmentMananger.setAvaiablesMedicalAppoinmentsList(avaiablesMedicalAppoinments);
+				view.showMessage("Cita Agendada Correctamente :-)");
+			}catch(NonExistentOptionException e){
+				view.showMessage(e.getMessage());
+			}
+
 			break;
 		case 2:
-			avaiablesMedicalAppoinments=medicalAppoinmentMananger.filterMedicalAppoinmentsByAfternoonHour();
-			view.showMedicalAppoinmentsList(avaiablesMedicalAppoinments);
-			view.showMessage("Digita el id de la cita que deseas agendar");
-			digitedId=view.readInt();
-			selectedMedicalAppoinment=user.selectMedicalAppoinment(avaiablesMedicalAppoinments, digitedId);
+
+			try {
+				avaiablesMedicalAppoinments=medicalAppoinmentMananger.filterMedicalAppoinmentsByAfternoonHour();
+				view.showMedicalAppoinmentsList(avaiablesMedicalAppoinments);
+				view.showMessage("Digita el id de la cita que deseas agendar");
+				digitedId=view.readInt();
+				selectedMedicalAppoinment=user.selectMedicalAppoinment(avaiablesMedicalAppoinments, digitedId);
+				medicalAppoinmentMananger.markAppoinmentAsBusy(avaiablesMedicalAppoinments, digitedId);
+				medicalAppoinmentMananger.setAvaiablesMedicalAppoinmentsList(avaiablesMedicalAppoinments);
+				view.showMessage("Cita Agendada Correctamente :-)");
+			}catch(NonExistentOptionException e){
+				view.showMessage(e.getMessage());
+			}
+
 			break;
 		case 3:
-			
 			break;
-			
-			
+
+		default:
+			view.showMessage("La Opcion digitada No existe,Vuelve a intentarlo");
+			break;
+
 		}
 
 		return selectedMedicalAppoinment;
@@ -300,27 +339,32 @@ public class Presenter {
 		int ccv;
 		String dueDateAsString;
 		LocalDate dueDate;
-		DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		boolean correctFormat=false;
+		VirtualCard virtualCard=null;
 
-		view.showMessage("Digita el codigo de la tarjeta");
-		code=view.readLong();
-		view.showMessage("Digita el ccv de tu tarjeta");
-		ccv=view.readInt();
-		view.showMessage("Digita la fecha de vencimiento de la tarjeta");
-		dueDateAsString=view.readString();
-		dueDate=LocalDate.parse(dueDateAsString,formatter);
-		VirtualCard virtualCard=paymentManager.createVirtualCard(user, ccv, code, dueDate);
+		while(!correctFormat) {
+			try {
+				view.showMessage("Digita el codigo de la tarjeta");
+				code=view.readLong();
+				view.showMessage("Digita el ccv de tu tarjeta");
+				ccv=view.readInt();
+				view.showMessage("Digita la fecha de vencimiento de la tarjeta");
+				dueDateAsString=view.readString();
+				dueDate=LocalDate.parse(dueDateAsString, formatter);
+				correctFormat=true;
+				virtualCard=paymentManager.createVirtualCard(user, ccv, code, dueDate);
+			}catch(DateTimeException e){
+				view.showMessage("Error:Digita la Fecha en el Formato Indicado");
+			}
 
+		}
 		return virtualCard;
 	}
 
-	public void verifyTarjetFunds(VirtualCard virtualCard,MedicalAppoinment medicalAppoinment){
-		paymentManager.paymentOfAppoinments(medicalAppoinment,virtualCard);
-	}
 
 	public void addMedicalAppoinmentToDataBases(User user,MedicalAppoinmentManager medicalAppoinmentManager,MedicalAppoinment medicalAppoinment){
 		user.addMedicalAppoinmenToList(medicalAppoinment);
-		medicalAppoinmentManager.addMedicalAppoinmentToList(medicalAppoinment);
 	}
 
 	public List<MedicalAppoinment>getUnpaidAppoinmets(User user){
@@ -334,14 +378,25 @@ public class Presenter {
 
 	}
 
-	public MedicalAppoinment medicalAppoinmentToPay(User user,VirtualCard virtualCard,List<MedicalAppoinment>unpaidMedicalAppoinments) {
+	public MedicalAppoinment selectMedicalAppoinmentToPay(User user,List<MedicalAppoinment>unpaidMedicalAppoinments) {
 		int choosedAppoinment;
+		MedicalAppoinment selectedMedicalAppoinment = null;
 		view.showMessage("Digita el Id de la cita que deseas Pagar");
 		choosedAppoinment=view.readInt();
-		MedicalAppoinment selectedMedicalAppoinment=user.selectMedicalAppoinment(unpaidMedicalAppoinments, choosedAppoinment);
+		selectedMedicalAppoinment=user.selectMedicalAppoinment(unpaidMedicalAppoinments, choosedAppoinment);
 
 		return selectedMedicalAppoinment;
 	}
+
+	public void paymentOfMedicalAppoinment(MedicalAppoinment medicalAppoinment,VirtualCard virtualCard){
+		paymentManager.paymentOfAppoinments(medicalAppoinment, virtualCard);
+	}
+
+	public void viewPendingMedicalAppoinments(List<MedicalAppoinment>unpaidQuotas) {
+		view.showMessage("Estas Son tus Citas Pendientes por Pagar\n");
+		view.showMedicalAppoinmentsList(unpaidQuotas);
+	}
+
 
 
 }
