@@ -105,12 +105,12 @@ public class MedicalAppoinment {
 		return price;
 	}
 
-	public void setAppoinmentPaymentStatus(boolean stateOfMedicalAppoinment) {
-		this.stateOfMedicalAppoinment=appoinmentPaymentStatus;
+	public void setAppoinmentPaymentStatus(boolean appoinmentPaymentStatus) {
+		this.appoinmentPaymentStatus=appoinmentPaymentStatus;
 	}
 
 	public boolean getStateOfAppoinmentPaymentStatus() {
-		return stateOfMedicalAppoinment;
+		return appoinmentPaymentStatus;
 	}
 
 	public String showNotice(){
@@ -135,24 +135,13 @@ public class MedicalAppoinment {
 		.append("Tipo de Cita: ")
 		.append(getAppoinmentType())
 		.append("\n")
-		.append("Nombre del Doctor: ")
-		.append(getNameOfDoctor())
-		.append("\n")
 		.append("Fecha de la cita: ")
 		.append(getDateOfAppoinment()).append("\n");
 		if(getStateOfAppoinmentPaymentStatus()){
-			medicalAppoinmentInformation.append("Pago de la Cita: ").append("Pagada");
+			medicalAppoinmentInformation.append("Pago de la Cita: ").append("Pagada").append("\n");
 		}
 		else {
-			medicalAppoinmentInformation.append("Pago de La Cita: ").append("No Pagada");
-		}
-		if(!getStateOfMedicalAppoinment()){
-			medicalAppoinmentInformation.append("Estado de la Cita: ").append("[✘]").append("\n")
-			.append(("---------------------------------------------------"));
-		}
-		else {
-			medicalAppoinmentInformation.append("Estado de la Cita: ").append("[✔]").append("\n")
-			.append(("---------------------------------------------------"));
+			medicalAppoinmentInformation.append("Pago de La Cita: ").append("No Pagada").append("\n");
 		}
 		return medicalAppoinmentInformation.toString();
 	}
