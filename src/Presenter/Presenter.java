@@ -117,12 +117,13 @@ public class Presenter {
 				try {
 					List<MedicalAppoinment>unpaidsMedicalAppoinments=getUnpaidAppoinmets(user);
 					viewPendingMedicalAppoinments(unpaidsMedicalAppoinments);
-					view.showMessage("¿Deseas Pagar Alguna De tus Citas?");
+					view.showMessage("¿Deseas Pagar Alguna De tus Citas?\n(Escribe si para pagar alguna cita y no para salir)");
 					yesOrNotAnswer=view.readString();
 					if(yesOrNotAnswer.toLowerCase().equals("si")){
 						VirtualCard virtualCard=enterPaymentData(user);
 						MedicalAppoinment selectedMedicalAppoinment=selectMedicalAppoinmentToPay(user, unpaidsMedicalAppoinments);			
-						medicalAppoinmentMananger.markAppoinmentAsBusy(unpaidsMedicalAppoinments, digitedOption);
+						paymentManager.paymentOfAppoinments(selectedMedicalAppoinment, virtualCard);
+						view.showMessage("Pago Concretado de manera exitosa :-)");
 					}
 				}catch(NonExistentOptionException e){
 					view.showMessage(e.getMessage());
@@ -297,7 +298,7 @@ public class Presenter {
 				view.showMessage("Digita el id de la cita que deseas agendar");
 				digitedId=view.readInt();
 				selectedMedicalAppoinment=user.selectMedicalAppoinment(avaiablesMedicalAppoinments, digitedId);
-				medicalAppoinmentMananger.removeMedicalAppoinment(avaiablesMedicalAppoinments, journeyChosen);
+				medicalAppoinmentMananger.removeMedicalAppoinment(avaiablesMedicalAppoinments, digitedId);
 				medicalAppoinmentMananger.setAvaiablesMedicalAppoinmentsList(avaiablesMedicalAppoinments);
 				view.showMessage("Cita Agendada Correctamente :-)");
 			}catch(NonExistentOptionException e){
@@ -313,7 +314,7 @@ public class Presenter {
 				view.showMessage("Digita el id de la cita que deseas agendar");
 				digitedId=view.readInt();
 				selectedMedicalAppoinment=user.selectMedicalAppoinment(avaiablesMedicalAppoinments, digitedId);
-				medicalAppoinmentMananger.markAppoinmentAsBusy(avaiablesMedicalAppoinments, digitedId);
+				medicalAppoinmentMananger.removeMedicalAppoinment(avaiablesMedicalAppoinments, journeyChosen);
 				medicalAppoinmentMananger.setAvaiablesMedicalAppoinmentsList(avaiablesMedicalAppoinments);
 				view.showMessage("Cita Agendada Correctamente :-)");
 			}catch(NonExistentOptionException e){
