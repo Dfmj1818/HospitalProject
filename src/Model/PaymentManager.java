@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import Exceptions.IncorrectFormatException;
 import Exceptions.InsufficientFundsException;
 
 public class PaymentManager {
@@ -18,16 +19,31 @@ public class PaymentManager {
 		virtualCardsDataBase.add(virtualCard);
 	}
 
-	public void verifyCcv() {
-
+	public int verifyCcv(int ccv) {
+       String ccvAsString=String.valueOf(ccv);
+       if(ccvAsString.matches("[0-9]{3}")){
+    	   return ccv;
+       }
+       else {
+    	   throw new IncorrectFormatException();
+       }
 	}
 
-	public void verifyCardCode() {
-
+	public long verifyCardCode(long cardCode){
+	  String cardCodeAsString=String.valueOf(cardCode);	
+      if(cardCodeAsString.matches("[0-9]{10}")){
+    	  return cardCode;
+      }
+      else {
+    	  throw new IncorrectFormatException();
+      }
 	}
 
-	public void verifyDueDate() {
-
+	public void verifyDueDate(LocalDate localDate) {
+		
+       if(localDate.isAfter()){
+    	   
+       }
 	}
 	
 	public VirtualCard createVirtualCard(User user,int ccv,long code,LocalDate dueDate){
