@@ -8,6 +8,7 @@ import java.util.List;
 import Exceptions.EmptyEntryException;
 import Exceptions.EmptyListException;
 import Exceptions.ExistingUserException;
+import Exceptions.IncorrectFormatException;
 import Exceptions.InsufficientFundsException;
 import Exceptions.NonExistentOptionException;
 import Exceptions.UserNotFoundException;
@@ -355,14 +356,17 @@ public class Presenter {
 				dueDate=LocalDate.parse(dueDateAsString, formatter);
 				correctFormat=true;
 				virtualCard=paymentManager.createVirtualCard(user, ccv, code, dueDate);
+				paymentManager.verifyCcv(ccv);
+				paymentManager.verifyCardCode(code);
+			}catch(IncorrectFormatException e){
+				view.showMessage(e.getMessage());
 			}catch(DateTimeException e){
 				view.showMessage("Error:Digita la Fecha en el Formato Indicado");
 			}
-
+			
 		}
 		return virtualCard;
 	}
-
 
 	public void addMedicalAppoinmentToDataBases(User user,MedicalAppoinmentManager medicalAppoinmentManager,MedicalAppoinment medicalAppoinment){
 		user.addMedicalAppoinmenToList(medicalAppoinment);
