@@ -48,7 +48,7 @@ public class View {
 
 	public String readString(){	
 		String digitedString=scanner.nextLine().trim();
-		if(!digitedString.isEmpty()&&digitedString.matches("^[a-zA-Z0-9]+$")) {
+		if(!digitedString.isEmpty()) {
 			return digitedString;
 		}
 		else {
@@ -60,7 +60,7 @@ public class View {
 		String digitedNumberAsString=scanner.nextLine().trim();
 		int number=0;
 
-		if(!digitedNumberAsString.isEmpty()){
+		if(!digitedNumberAsString.isEmpty()&&digitedNumberAsString.matches("^[0-9]+$")){
 			try {
 				number=Integer.parseInt(digitedNumberAsString);
 
@@ -72,8 +72,6 @@ public class View {
 			throw new EmptyEntryException();
 		}
 	
-
-
 	return number;
 
 }

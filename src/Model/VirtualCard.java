@@ -11,9 +11,8 @@ public class VirtualCard {
 	private long code;
 	private LocalDate dueDate;
 	
-	public VirtualCard(User user,long founds,int ccv,long code,LocalDate dueDate){
+	public VirtualCard(User user,int ccv,long code,LocalDate dueDate){
 		this.user=user;
-		this.founds=founds;
 		this.ccv=ccv;
 		this.code=code;
 		this.dueDate=dueDate;
@@ -27,11 +26,11 @@ public class VirtualCard {
 		return user;
 	}
 	
-	public void setFounds(long founds){
+	public void setFunds(long founds){
 		this.founds=founds;
 	}
 	
-	public long getFounds() {
+	public long getFunds() {
 		return founds;
 	}
 	

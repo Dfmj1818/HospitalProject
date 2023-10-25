@@ -17,12 +17,16 @@ public class MedicalAppoinmentManager  {
 		medicalAppoinmentsList=new ArrayList<MedicalAppoinment>();
 	}
 
-	public void setAvaiablesMedicalAppoinmentsList(List<MedicalAppoinment>avaiablesmedicalAppoinmentList){
-		this.medicalAppoinmentsList=avaiablesmedicalAppoinmentList;
+	public void setAvaiablesMedicalAppoinmentsList(List<MedicalAppoinment>medicalAppoinmentsList){
+		this.medicalAppoinmentsList=medicalAppoinmentsList;
 	}
 
-	public List<MedicalAppoinment>getAvaiablestMedicalAppoinmentsList(){
+	public List<MedicalAppoinment>getMedicalAppoinmentsList(){
 		return medicalAppoinmentsList;
+	}
+
+	public void addMedicalAppoinmentToList(MedicalAppoinment medicalAppoinment) {
+		medicalAppoinmentsList.add(medicalAppoinment);
 	}
 
 	public void setMedicalAppoinmentsId() {
@@ -33,7 +37,16 @@ public class MedicalAppoinmentManager  {
 		}
 	}
 
-	public List<MedicalAppoinment> getAvaiablesMedicalAppoinment() {
+	public void setStateOfPayementForAllMedicalAppoinments() {
+		medicalAppoinmentsList.forEach(medicalAppoinment->medicalAppoinment.setAppoinmentPaymentStatus(false));
+	}
+
+	public void setStateOfMedicalAppoinment() {
+		medicalAppoinmentsList.forEach(medicalAppoinment->medicalAppoinment.setStateOfMedicalAppoinment(true));
+	}
+
+
+	public List<MedicalAppoinment> filterAvaiablesMedicalAppoinments() {
 		List<MedicalAppoinment>avaiablesMedicalAppoinments=medicalAppoinmentsList.stream()
 				.filter(medicalAppoinment->medicalAppoinment.getStateOfMedicalAppoinment())
 				.collect(Collectors.toList());
@@ -43,6 +56,10 @@ public class MedicalAppoinmentManager  {
 
 	public void setMedicalAppoinmentsPrice() {
 		medicalAppoinmentsList.forEach(medicalAppoinment->medicalAppoinment.setPriceOfMedicalAppoinment(16400));
+	}
+
+	public void setMedicalAppoinmentState() {
+		medicalAppoinmentsList.forEach(medicalAppoinment->medicalAppoinment.setStateOfMedicalAppoinment(true));
 	}
 
 	public void medicalAppoinmentsCreationAndSetHour(){
@@ -95,20 +112,9 @@ public class MedicalAppoinmentManager  {
 	}
 
 
-	public List<MedicalAppoinment>filterByAppoinmentType(int selectedMedicalAppoinment){
-		List<MedicalAppoinment>filteredListByAppoinmentType=medicalAppoinmentsList.stream()
-				.filter(medicalAppoinment->medicalAppoinment.getAppoinmentType().equals(selectedMedicalAppoinment))
-				.collect(Collectors.toList());
-
-		return filteredListByAppoinmentType;
-	}
-
 	public List<MedicalAppoinment>filterMedicalAppoinmentsByMorningHour(){
 		List<MedicalAppoinment>listFilteredByMorningHour= medicalAppoinmentsList.stream()
-				.filter(medicalAppoinment->{
-					int medicalAppoinmentHour=medicalAppoinment.getDateOfAppoinment().getHour();
-					return medicalAppoinmentHour>=8&&medicalAppoinmentHour<=12;
-				})
+				.filter(medicalAppoinment->medicalAppoinment.getDateOfAppoinment().getHour()<=13&&medicalAppoinment.getStateOfMedicalAppoinment())
 				.collect(Collectors.toList());
 
 		return listFilteredByMorningHour;           
@@ -116,18 +122,28 @@ public class MedicalAppoinmentManager  {
 
 	public List<MedicalAppoinment>filterMedicalAppoinmentsByAfternoonHour(){
 		List<MedicalAppoinment>listFilteredByAfternoonHour=medicalAppoinmentsList.stream()
-				.filter(medicalAppoinment->{
-					int medicalAppoinmentHour=medicalAppoinment.getDateOfAppoinment().getHour();
-					return medicalAppoinmentHour>=13;
-				})
+				.filter(medicalAppoinment->medicalAppoinment.getDateOfAppoinment().getHour()>13&&medicalAppoinment.getStateOfMedicalAppoinment())
 				.collect(Collectors.toList());
 
 		return listFilteredByAfternoonHour;
 	}
 
-	public void modifyStateOfMedicalAppoinment(MedicalAppoinment medicalApppoinment){
-		medicalApppoinment.setStateOfMedicalAppoinment(false);
+	public List<MedicalAppoinment>filterUnpaidAppoinments(User user){
+		return user.getMedicalAppoinmentsHistory().stream()
+				.filter(medicalAppoinment->!medicalAppoinment.getStateOfAppoinmentPaymentStatus())
+				.collect(Collectors.toList());
+
 	}
 
+	public void verifyIfListIsEmpty(List<MedicalAppoinment>list){
+		if(list.isEmpty()){
+			throw new EmptyListException();
+		}
+	}
+	
+	public void removeMedicalAppoinment(List<MedicalAppoinment>medicalAppoinments,int selectedAppoinment) {
+        medicalAppoinments.removeIf(medicalAppoinment->medicalAppoinment.getId()==selectedAppoinment);
+	}
+	
 
 }

@@ -31,7 +31,7 @@ public class PaymentManager {
 
 	public long verifyCardCode(long cardCode){
 	  String cardCodeAsString=String.valueOf(cardCode);	
-      if(cardCodeAsString.matches("[0-9]{10}")){
+      if(cardCodeAsString.matches("^[0-9]{10}$")){
     	  return cardCode;
       }
       else {
@@ -39,10 +39,13 @@ public class PaymentManager {
       }
 	}
 
-	public void verifyDueDate(LocalDate localDate) {
-		
-       if(localDate.isAfter()){
-    	   
+	public LocalDate verifyDueDate(LocalDate dueDate) {
+	   LocalDate todaysDate=LocalDate.now();
+       if(dueDate.isAfter(todaysDate)){
+    	   return todaysDate;
+       }
+       else {
+    	   throw new IncorrectFormatException();
        }
 	}
 	

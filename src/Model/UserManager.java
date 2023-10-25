@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import Exceptions.ExistingUserException;
+import Exceptions.IncorrectFormatException;
 import Exceptions.UserNotFoundException;
 
 public class UserManager {
@@ -41,19 +42,39 @@ public class UserManager {
 
 	public boolean verifyIfUserExists(long license,String password){
 		boolean userExists=usersDataBase.stream()
-		             .anyMatch(user->user.getLicense()==license&&password.equals(password));
-		             
+				.anyMatch(user->user.getLicense()==license&&password.equals(password));
+
 		return userExists;
 
 	}
 
 	public long verifyUserLicense(long license){
-		return license;
+		String licenseAsString=String.valueOf(license);
+		if(licenseAsString.matches("(40)[0-9]{8}")){
+			return license;
+		}
+		else{
+			throw new IncorrectFormatException();
+		}
 	}
 
 	public long verifyUserIdentityTarjet(long identityTarjet){
-
-		return identityTarjet;
+		String identityTarjetAsString=String.valueOf(identityTarjet);
+		if(!identityTarjetAsString.isEmpty()&&identityTarjetAsString.matches("(10)[0-9]{8}")){
+			return identityTarjet;
+		}
+		else {
+			throw new IncorrectFormatException();
+		}
+	}
+	
+	public String verifyUserMail(String mail){
+		if(mail.matches("^[a-zA-Z0-9]+@(gmail\\.com|@hotmail\\.com)$")){
+			return mail;
+		}
+		else {
+			throw new IncorrectFormatException();
+		}
 	}
 
 

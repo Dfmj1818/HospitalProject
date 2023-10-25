@@ -150,7 +150,6 @@ public class Presenter {
 	public User loginUser(){
 		int selectedOption;
 		boolean exit=false;
-		long license;
 		String digitedPassword="";
 		User foundUser=null;
 
@@ -160,13 +159,17 @@ public class Presenter {
 			switch(selectedOption){
 			case 1:
 				view.showMessage("Digita el Numero del documento");
-				license=view.readLong();
+				long identityTarjet=view.readLong();
 				view.showMessage("Digita tu contraseña");
 				digitedPassword=view.readString();
+
 				try {
-					foundUser=userManager.filterUser(license, digitedPassword);
+					userManager.verifyUserIdentityTarjet(identityTarjet);
+					foundUser=userManager.filterUser(identityTarjet, digitedPassword);
 					exit=true;
 				}catch(UserNotFoundException e){
+					view.showMessage(e.getMessage());
+				}catch(IncorrectFormatException e){
 					view.showMessage(e.getMessage());
 				}
 
@@ -174,10 +177,11 @@ public class Presenter {
 
 			case 2:
 				view.showMessage("Digita el numero del Documento");
-				license=view.readLong();
+				long license=view.readLong();
 				view.showMessage("Digita tu Contraseña");
 				digitedPassword=view.readString();
 				try {
+					userManager.verifyUserLicense(license);
 					foundUser=userManager.filterUser(license, digitedPassword);
 					exit=true;
 				}catch(UserNotFoundException e){
@@ -206,7 +210,6 @@ public class Presenter {
 		String digitedLastName;
 		int digitedOption;
 		boolean exit=false;
-		long license;
 		boolean userExists;
 		User createdUser = null;
 		List<MedicalAppoinment>avaiablesMedicalAppoinments;
@@ -220,7 +223,7 @@ public class Presenter {
 				switch(digitedOption){
 				case 1:
 					view.showMessage("Digita el numero del Documento");
-					license=view.readLong();
+					long identityTarjet=view.readLong();
 					view.showMessage("Digita Una Contraseña");
 					password=view.readString();
 					view.showMessage("Digita un Correo Electronico");
@@ -229,9 +232,15 @@ public class Presenter {
 					digitedName=view.readString();
 					view.showMessage("Digita tu Appelido");
 					digitedLastName=view.readString();
-					userExists=userManager.verifyIfUserExists(license, password);
+					try {
+						userManager.verifyUserIdentityTarjet(identityTarjet);
+						userManager.verifyUserMail(digitedMail);
+					}catch(IncorrectFormatException e){
+						view.showMessage(e.getMessage());
+					}
+					userExists=userManager.verifyIfUserExists(identityTarjet, password);
 					if(!userExists){
-						createdUser=userManager.createUser(digitedMail, password, digitedName, digitedLastName, license);
+						createdUser=userManager.createUser(digitedMail, password, digitedName, digitedLastName, identityTarjet);
 						userManager.registerUserInDataBase(createdUser);
 						view.showMessage("Registro Exitoso :-)");
 						exit=true;
@@ -243,7 +252,7 @@ public class Presenter {
 
 				case 2:
 					view.showMessage("Digita el numero del documento");
-					license=view.readLong();
+					long license=view.readLong();
 					view.showMessage("Digita Tu contraseña");
 					password=view.readString();
 					view.showMessage("Digita Un correo Electronico");
@@ -252,6 +261,12 @@ public class Presenter {
 					digitedName=view.readString();
 					view.showMessage("Digita tu apellido");
 					digitedLastName=view.readString();
+					try {
+						userManager.verifyUserMail(digitedMail);
+						userManager.verifyUserLicense(license);
+					}catch(IncorrectFormatException e){
+						view.showMessage(e.getMessage());
+					}
 					userExists=userManager.verifyIfUserExists(license, password);
 					if(!userExists){
 						createdUser=userManager.createUser(digitedMail, password, digitedName, digitedLastName, license);
@@ -277,7 +292,8 @@ public class Presenter {
 
 		}catch(EmptyEntryException e){
 			view.showMessage(e.getMessage());
-			registerUser();
+		}catch(IncorrectFormatException e){
+			view.showMessage(e.getMessage());
 		}
 		return createdUser;
 	}	
@@ -323,8 +339,6 @@ public class Presenter {
 			}
 
 			break;
-		case 3:
-			break;
 
 		default:
 			view.showMessage("La Opcion digitada No existe,Vuelve a intentarlo");
@@ -360,10 +374,12 @@ public class Presenter {
 				paymentManager.verifyCardCode(code);
 			}catch(IncorrectFormatException e){
 				view.showMessage(e.getMessage());
+				break;
 			}catch(DateTimeException e){
 				view.showMessage("Error:Digita la Fecha en el Formato Indicado");
+				break;
 			}
-			
+
 		}
 		return virtualCard;
 	}

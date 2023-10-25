@@ -15,12 +15,14 @@ public class User {
 	private String name;
 	private String lastName;
 	private List<MedicalAppoinment>medicalAppoinmentsHistory;
-    private View view;
-    private VirtualCard virtualCard;
+	private List<MedicalAppoinment>scheduledAppoinments;
+	private View view;
+	private VirtualCard virtualCard;
     
 	public User(){
 		medicalAppoinmentsHistory=new ArrayList<MedicalAppoinment>();
 		view=new View();
+		scheduledAppoinments=new ArrayList<MedicalAppoinment>();
 	}
 
 	public void setMail(String mail){
@@ -82,11 +84,11 @@ public class User {
 	public long getLicense() {
 		return license;
 	}
-	
+
 	public void setVirtualCard(VirtualCard virtualCard){
 		this.virtualCard=virtualCard;
 	}
-	
+
 	public VirtualCard getVirtualCard() {
 		return virtualCard;
 	}
@@ -102,17 +104,22 @@ public class User {
 	public void addMedicalAppoinmenToList(MedicalAppoinment medicalAppoinment) {
 		medicalAppoinmentsHistory.add(medicalAppoinment);
 	}
+	
 
-	public MedicalAppoinment selectMedicalAppoinment(List<MedicalAppoinment>avaiablesMedicalAppoinments,int selectedAppoinment){
-		MedicalAppoinment selectedMedicalAppoinment=avaiablesMedicalAppoinments.stream()
-				.filter(medicalAppoinment->medicalAppoinment.getDateOfAppoinment().getDayOfMonth()==selectedAppoinment)
+	public MedicalAppoinment selectMedicalAppoinment(List<MedicalAppoinment>list,int selectedAppoinment){
+		MedicalAppoinment selectedMedicalAppoinment=list.stream()			
+				.filter(medicalAppoinment->medicalAppoinment.getId()==selectedAppoinment)
 				.findFirst()
 				.orElseThrow(NonExistentOptionException::new);
 
 		return selectedMedicalAppoinment;
 	}
+  
+	public void checkAppoinmentsInProgress(){
+		
+	}
 	
-	
+
 
 	@Override
 	public String toString() {
